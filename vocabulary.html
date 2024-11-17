@@ -4,121 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelimeler | İngilizce Çalışma Planı</title>
-    <link rel="stylesheet" href="additional.css">
-	    <!-- Yeni eklenen script dosyaları -->
-    <script src="vocabulary.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/content.js"></script>
+	<script src="js/vocabulary.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-content">
-            <h1>İngilizce Çalışma Planı</h1>
-            <div class="nav-links">
-                <a href="index.html">Haftalık Plan</a>
-                <a href="progress.html">İlerleme</a>
-                <a href="content.html">Modern Family</a>
-                <a href="vocabulary.html" class="active">Kelimeler</a>
-            </div>
-        </div>
-    </nav>
+    <div class="container">
+        <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
-    <main class="container">
-        <!-- Üst Araç Çubuğu -->
+        <div class="nav-tabs">
+            <a href="index.html" class="tab-btn">Haftalık Plan</a>
+            <a href="progress.html" class="tab-btn">İlerleme</a>
+            <a href="modernfamily.html" class="tab-btn">Modern Family</a>
+            <a href="vocabulary.html" class="tab-btn active">Kelimeler</a>
+        </div>
+
+        <!-- Kelime Araç Çubuğu -->
         <div class="vocab-toolbar">
             <div class="search-box">
-                <input type="text" placeholder="Kelime ara...">
+                <input type="text" id="searchWord" placeholder="Kelime ara...">
             </div>
             <div class="toolbar-actions">
-                <button class="btn" onclick="syncWithAnki()">
+                <button onclick="exportToAnki()" class="btn">
                     <span>🎴</span> Anki'ye Aktar
                 </button>
-                <button class="btn" onclick="syncWithQuizlet()">
+                <button onclick="exportToQuizlet()" class="btn">
                     <span>📚</span> Quizlet'e Aktar
                 </button>
-                <button class="btn primary" onclick="addNewWord()">
+                <button onclick="showAddWordModal()" class="btn primary">
                     <span>+</span> Yeni Kelime
                 </button>
             </div>
         </div>
 
-        <!-- Filtreleme -->
+        <!-- Filtreler -->
         <div class="filter-bar">
             <div class="filter-group">
                 <label>Kaynak:</label>
-                <select>
-                    <option>Tümü</option>
-                    <option>Modern Family</option>
-                    <option>BBC Learning</option>
-                    <option>Manuel Eklenen</option>
+                <select id="sourceFilter" onchange="filterWords()">
+                    <option value="all">Tümü</option>
+                    <option value="modernFamily">Modern Family</option>
+                    <option value="manual">Manuel Eklenen</option>
                 </select>
             </div>
             <div class="filter-group">
                 <label>Sıralama:</label>
-                <select>
-                    <option>Yeniden Eskiye</option>
-                    <option>A-Z</option>
-                    <option>Öğrenme Durumu</option>
+                <select id="sortFilter" onchange="filterWords()">
+                    <option value="date">Yeniden Eskiye</option>
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
                 </select>
             </div>
         </div>
 
         <!-- Kelime Listesi -->
-        <div class="vocabulary-list">
-            <div class="word-card">
-                <div class="word-header">
-                    <h3>appreciate</h3>
-                    <div class="word-badges">
-                        <span class="badge source">Modern Family</span>
-                        <span class="badge status">Yeni</span>
-                    </div>
-                </div>
-                <p class="word-definition">Takdir etmek, değer vermek</p>
-                <p class="word-example">"I really appreciate your help."</p>
-                <div class="word-actions">
-                    <button onclick="editWord()" class="btn small">Düzenle</button>
-                    <button onclick="reviewWord()" class="btn small">Tekrar Et</button>
-                    <button onclick="exportWord()" class="btn small">Dışa Aktar</button>
-                </div>
-            </div>
-
-            <!-- Diğer kelime kartları -->
+        <div class="word-grid" id="wordList">
+            <!-- Kelimeler JavaScript ile doldurulacak -->
         </div>
 
         <!-- Kelime Ekleme/Düzenleme Modal -->
         <div id="wordModal" class="modal">
             <div class="modal-content">
-                <h2>Yeni Kelime Ekle</h2>
-                <form id="wordForm">
+                <h2 id="wordModalTitle">Yeni Kelime</h2>
+                <form id="wordForm" onsubmit="saveWord(event)">
                     <div class="form-group">
                         <label>Kelime</label>
-                        <input type="text" required>
+                        <input type="text" id="wordText" required>
                     </div>
                     <div class="form-group">
                         <label>Anlamı</label>
-                        <input type="text" required>
+                        <input type="text" id="wordMeaning" required>
                     </div>
                     <div class="form-group">
                         <label>Örnek Cümle</label>
-                        <textarea></textarea>
+                        <textarea id="wordExample"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Kaynak</label>
-                        <select>
-                            <option>Modern Family</option>
-                            <option>BBC Learning</option>
-                            <option>Manuel</option>
+                        <select id="wordSource">
+                            <option value="manual">Manuel</option>
+                            <option value="modernFamily">Modern Family</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Notlar</label>
-                        <textarea></textarea>
-                    </div>
-                    <div class="modal-actions">
+                    <div class="form-buttons">
                         <button type="submit" class="btn primary">Kaydet</button>
-                        <button type="button" class="btn">İptal</button>
+                        <button type="button" onclick="deleteWord()" class="btn danger" id="deleteWordBtn" style="display: none;">Sil</button>
+                        <button type="button" onclick="closeModal('wordModal')" class="btn">İptal</button>
                     </div>
                 </form>
             </div>
         </div>
-    </main>
+    </div>
 </body>
 </html>

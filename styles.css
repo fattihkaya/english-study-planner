@@ -1,13 +1,14 @@
+/* Ana stiller */
 :root {
-    --primary: #0066FF;
-    --primary-dark: #0052CC;
+    --primary: #007AFF;
     --danger: #FF3B30;
     --success: #34C759;
+    --warning: #FFCC00;
     --background: #F2F3F7;
     --surface: #FFFFFF;
-    --text: #1C1C1E;
+    --text: #000000;
     --text-secondary: #8E8E93;
-    --border: #C6C6C8;
+    --border: #C7C7CC;
 }
 
 * {
@@ -23,79 +24,231 @@ body {
     line-height: 1.5;
 }
 
-/* Navbar */
-.navbar {
-    background: var(--surface);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.nav-content {
+.container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 20px;
 }
 
-.nav-content h1 {
-    font-size: 1.5rem;
+.main-title {
+    text-align: center;
     color: var(--primary);
+    margin-bottom: 24px;
 }
 
-.nav-links {
+/* Navigasyon */
+.nav-tabs {
     display: flex;
-    gap: 1rem;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
 }
 
-.nav-links a {
-    text-decoration: none;
+.tab-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    background: var(--surface);
     color: var(--text);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: all 0.2s;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.nav-links a.active {
+.tab-btn.active {
     background: var(--primary);
     color: white;
 }
 
-/* Ana Container */
-.container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+/* İlerleme Kartı */
+.progress-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Aksiyon Butonları */
-.actions {
+.progress-bar {
+    height: 8px;
+    background: var(--background);
+    border-radius: 4px;
+    margin: 12px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+/* Haftalık Plan */
+.weekly-plan {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.day-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.day-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 2rem;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
-.primary-actions, .secondary-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn {
+.add-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    justify-content: center;
+}
+
+.time-block {
+    margin-bottom: 16px;
+}
+
+.time-block h3 {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+/* Görev Kartları */
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--background);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+}
+
+.task-item.completed {
+    opacity: 0.7;
+}
+
+.task-checkbox {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+.task-content {
+    flex: 1;
+    cursor: pointer;
+}
+
+.task-title {
+    font-weight: 500;
+}
+
+.task-duration {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.delete-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: var(--danger);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.task-item:hover .delete-btn {
+    opacity: 1;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+/* Butonlar */
+.btn {
+    padding: 12px 24px;
     border: none;
     border-radius: 8px;
+    font-size: 16px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
 }
 
 .btn.primary {
@@ -108,175 +261,434 @@ body {
     color: white;
 }
 
-/* İstatistik Kartları */
-.weekly-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: var(--surface);
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.progress-bar {
-    height: 8px;
-    background: var(--background);
-    border-radius: 4px;
-    margin: 0.75rem 0;
-    overflow: hidden;
-}
-
-.progress {
-    height: 100%;
-    background: var(--primary);
-    transition: width 0.3s ease;
-}
-
-/* Gün Kartları */
-.day-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-}
-
-.day-card {
-    background: var(--surface);
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--primary);
-}
-
-.add-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-}
-
-/* Task Listesi */
-.time-block {
-    margin-bottom: 1rem;
-}
-
-.time-block h3 {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 0.5rem;
-}
-
-.task-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.task-item {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    background: var(--background);
-    border-radius: 8px;
-    gap: 0.75rem;
-}
-
-/* Modal */
-.modal {
-    display: none;
+/* Bildirimler */
+.notification {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 24px;
     background: var(--surface);
-    padding: 1.5rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 500px;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--text-secondary);
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
     border-radius: 8px;
-    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .nav-content {
-        flex-direction: column;
-        gap: 1rem;
+    .container {
+        padding: 12px;
     }
-    
-    .nav-links {
-        width: 100%;
+
+    .nav-tabs {
         overflow-x: auto;
-        padding-bottom: 0.5rem;
+        padding-bottom: 8px;
     }
-    
-    .actions {
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+}
+/* Modern Family Sayfası Stilleri */
+.season-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.season-btn {
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.season-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.episode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.episode-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.episode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.episode-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.episode-number {
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.episode-title {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.episode-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.episode-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Modal Geliştirmeleri */
+.modal-content.wide {
+    max-width: 800px;
+}
+
+.modal-header {
+    margin-bottom: 24px;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-tab {
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.detail-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.detail-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.detail-content.active {
+    display: block;
+}
+
+.episode-notes {
+    width: 100%;
+    min-height: 200px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+/* İlerleme Sayfası Stilleri */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 16px;
+}
+
+.stat-card.highlight {
+    background: linear-gradient(135deg, var(--primary), #0056D6);
+    color: white;
+}
+
+.stat-icon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.highlight .stat-label {
+    color: rgba(255,255,255,0.8);
+}
+
+.activity-section {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.activity-list {
+    margin-top: 20px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-time {
+    min-width: 100px;
+    color: var(--text-secondary);
+}
+
+.activity-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 0 16px;
+}
+
+.activity-badge.grammar { background: #E3F2FD; color: #1565C0; }
+.activity-badge.video { background: #F3E5F5; color: #7B1FA2; }
+.activity-badge.vocabulary { background: #E8F5E9; color: #2E7D32; }
+
+/* Kelimeler Sayfası Stilleri */
+.vocab-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 300px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.filter-bar {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-group select {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+}
+
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.word-item {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.word-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.word-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.word-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.word-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.word-meaning {
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.word-example {
+    font-style: italic;
+    padding: 12px;
+    background: var(--background);
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.word-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .vocab-toolbar {
         flex-direction: column;
-        gap: 1rem;
     }
-    
-    .primary-actions, .secondary-actions {
+
+    .search-box {
         width: 100%;
     }
-    
-    .btn {
+
+    .filter-bar {
+        flex-direction: column;
+    }
+
+    .filter-group {
         width: 100%;
-        justify-content: center;
+    }
+
+    .filter-group select {
+        flex: 1;
+    }
+
+    .modal-content.wide {
+        width: 95%;
+        margin: 10px;
+    }
+
+    .word-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Desteği */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #000000;
+        --surface: #1C1C1E;
+        --text: #FFFFFF;
+        --text-secondary: #98989D;
+        --border: #2C2C2E;
+    }
+
+    .season-btn {
+        background: var(--surface);
+        border-color: var(--border);
+    }
+
+    .episode-card {
+        background: var(--surface);
+    }
+
+    .word-item {
+        background: var(--surface);
+    }
+
+    .search-box input {
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    .filter-group select {
+        background: var(--surface);
+        color: var(--text);
+    }
+
+    .activity-badge {
+        opacity: 0.8;
     }
 }

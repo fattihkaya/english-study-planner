@@ -4,108 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İlerleme | İngilizce Çalışma Planı</title>
-    <link rel="stylesheet" href="additional.css">
-	    <!-- Yeni eklenen script dosyaları -->
-    <script src="progress.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/content.js"></script>
+	<script src="js/progress.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-content">
-            <h1>İngilizce Çalışma Planı</h1>
-            <div class="nav-links">
-                <a href="index.html">Haftalık Plan</a>
-                <a href="progress.html" class="active">İlerleme</a>
-                <a href="content.html">Modern Family</a>
-                <a href="vocabulary.html">Kelimeler</a>
-            </div>
-        </div>
-    </nav>
+    <div class="container">
+        <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
-    <main class="container">
-        <!-- Özet Kartları -->
-        <div class="stats-overview">
+        <div class="nav-tabs">
+            <a href="index.html" class="tab-btn">Haftalık Plan</a>
+            <a href="progress.html" class="tab-btn active">İlerleme</a>
+            <a href="modernfamily.html" class="tab-btn">Modern Family</a>
+            <a href="vocabulary.html" class="tab-btn">Kelimeler</a>
+        </div>
+
+        <!-- İlerleme Özeti -->
+        <div class="stats-grid">
             <div class="stat-card highlight">
                 <div class="stat-icon">🎯</div>
-                <div class="stat-info">
+                <div class="stat-content">
                     <h3>Haftalık Hedef</h3>
-                    <div class="stat-value">360 dk</div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 45%"></div>
+                    <div class="stat-progress">
+                        <div class="progress-bar">
+                            <div class="progress" id="weeklyProgress"></div>
+                        </div>
+                        <div class="progress-text" id="weeklyProgressText">0/360 dakika</div>
                     </div>
-                    <span class="stat-detail">162/360 dakika</span>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon">📚</div>
-                <div class="stat-info">
+                <div class="stat-content">
                     <h3>Kelimeler</h3>
-                    <div class="stat-value">124</div>
-                    <span class="stat-detail">Bu ay öğrenilen</span>
+                    <div class="stat-value" id="wordCount">0</div>
+                    <div class="stat-label">Bu ay öğrenilen</div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon">🎬</div>
-                <div class="stat-info">
+                <div class="stat-content">
                     <h3>Bölümler</h3>
-                    <div class="stat-value">8</div>
-                    <span class="stat-detail">İzlenen bölüm</span>
+                    <div class="stat-value" id="episodeCount">0</div>
+                    <div class="stat-label">İzlenen bölüm</div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-icon">🔥</div>
-                <div class="stat-info">
+                <div class="stat-content">
                     <h3>Streak</h3>
-                    <div class="stat-value">12 gün</div>
-                    <span class="stat-detail">En uzun: 15 gün</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Detaylı İstatistikler -->
-        <div class="stats-detail">
-            <div class="chart-container">
-                <h3>Günlük Çalışma Süresi</h3>
-                <div class="chart">
-                    <!-- Grafik JS ile çizilecek -->
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <h3>Aktivite Dağılımı</h3>
-                <div class="chart">
-                    <!-- Pasta grafik JS ile çizilecek -->
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">gün</div>
                 </div>
             </div>
         </div>
 
         <!-- Aktivite Geçmişi -->
-        <div class="activity-history">
-            <h3>Son Aktiviteler</h3>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-time">09:30</div>
-                    <div class="activity-badge grammar">Grammar</div>
-                    <div class="activity-content">
-                        <div class="activity-title">Present Perfect dersi tamamlandı</div>
-                        <div class="activity-detail">15 dakika • English with Lucy</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-time">11:15</div>
-                    <div class="activity-badge video">Video</div>
-                    <div class="activity-content">
-                        <div class="activity-title">Modern Family S01E05 izlendi</div>
-                        <div class="activity-detail">25 dakika • 12 yeni kelime</div>
-                    </div>
-                </div>
-
-                <!-- Diğer aktiviteler -->
+        <div class="activity-section">
+            <h2>Son Aktiviteler</h2>
+            <div class="activity-list" id="activityList">
+                <!-- Aktiviteler JavaScript ile doldurulacak -->
             </div>
         </div>
-    </main>
+    </div>
 </body>
 </html>

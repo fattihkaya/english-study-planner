@@ -5,119 +5,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İngilizce Çalışma Planı</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="js/common.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/content.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-content">
-            <h1>İngilizce Çalışma Planı</h1>
-            <div class="nav-links">
-                <a href="index.html" class="active">Haftalık Plan</a>
-                <a href="progress.html">İlerleme</a>
-                <a href="content.html">Modern Family</a>
-                <a href="vocabulary.html">Kelimeler</a>
-            </div>
-        </div>
-    </nav>
+    <div class="container">
+        <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
-    <main class="container">
-        <div class="actions">
-            <div class="primary-actions">
-                <button onclick="savePlan()" class="btn primary">
-                    <span>💾</span> Planı Kaydet
-                </button>
-                <button onclick="exportToCalendar()" class="btn primary">
-                    <span>📅</span> Takvime Ekle
-                </button>
-            </div>
-            <div class="secondary-actions">
-                <button onclick="importPlan()" class="btn">
-                    <span>📥</span> İçe Aktar
-                </button>
-                <button onclick="exportPlan()" class="btn">
-                    <span>📤</span> Dışa Aktar
-                </button>
-            </div>
+        <div class="nav-tabs">
+            <button onclick="switchView('weekly')" class="tab-btn active">Haftalık Plan</button>
+            <button onclick="switchView('progress')" class="tab-btn">İlerleme</button>
+            <button onclick="switchView('modernFamily')" class="tab-btn">Modern Family</button>
+            <button onclick="switchView('kelimeler')" class="tab-btn">Kelimeler</button>
         </div>
 
-        <div class="weekly-stats">
-            <div class="stat-card">
+        <!-- Haftalık Görünüm -->
+        <div id="weekly-view" class="view-content active">
+            <!-- İlerleme Kartı -->
+            <div class="progress-card">
                 <h3>Haftalık Hedef</h3>
                 <div class="progress-bar">
                     <div class="progress" style="width: 0%"></div>
                 </div>
-                <span class="stat-text">0/360 dakika</span>
+                <div class="progress-text">0/360 dakika (0%)</div>
+                <div class="task-progress">0/0 görev tamamlandı</div>
             </div>
-            <div class="stat-card">
-                <h3>Tamamlanan Görevler</h3>
-                <div class="progress-bar">
-                    <div class="progress" style="width: 0%"></div>
-                </div>
-                <span class="stat-text">0/15 görev</span>
-            </div>
-        </div>
 
-        <div class="day-grid">
-            <!-- Her gün için kart -->
-            <div class="day-card" data-day="pazartesi">
-                <div class="day-header">
-                    <h2>Pazartesi</h2>
-                    <button onclick="addTask('pazartesi')" class="add-btn">+</button>
-                </div>
-
-                <div class="time-blocks">
+            <!-- Haftalık Plan -->
+            <div class="weekly-plan">
+                <!-- Pazartesi -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>Pazartesi</h2>
+                        <button onclick="openAddTaskModal('pazartesi')" class="add-btn">+</button>
+                    </div>
+                    
                     <div class="time-block">
                         <h3>☀️ Sabah</h3>
-                        <div class="task-list" id="pazartesi-sabah"></div>
+                        <div id="pazartesi-sabah" class="task-list"></div>
                     </div>
 
                     <div class="time-block">
                         <h3>🌤️ Öğle</h3>
-                        <div class="task-list" id="pazartesi-ogle"></div>
+                        <div id="pazartesi-ogle" class="task-list"></div>
                     </div>
 
                     <div class="time-block">
                         <h3>🌙 Akşam</h3>
-                        <div class="task-list" id="pazartesi-aksam"></div>
+                        <div id="pazartesi-aksam" class="task-list"></div>
                     </div>
                 </div>
-            </div>
-            <!-- Diğer günler benzer şekilde -->
-        </div>
-    </main>
 
-    <!-- Task Ekleme/Düzenleme Modal -->
-    <div id="taskModal" class="modal">
-        <div class="modal-content">
-            <h2>Görev Ekle</h2>
-            <form id="taskForm">
-                <div class="form-group">
-                    <label>Başlık</label>
-                    <input type="text" id="taskTitle" required>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Süre (dk)</label>
-                        <input type="number" id="taskDuration" min="5" step="5" required>
+                <!-- Diğer günler için aynı yapı -->
+                <!-- Salı -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>Salı</h2>
+                        <button onclick="openAddTaskModal('sali')" class="add-btn">+</button>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Zaman</label>
-                        <select id="taskTime">
-                            <option value="sabah">Sabah</option>
-                            <option value="ogle">Öğle</option>
-                            <option value="aksam">Akşam</option>
-                        </select>
+                    <div class="time-block">
+                        <h3>☀️ Sabah</h3>
+                        <div id="sali-sabah" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌤️ Öğle</h3>
+                        <div id="sali-ogle" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌙 Akşam</h3>
+                        <div id="sali-aksam" class="task-list"></div>
                     </div>
                 </div>
 
-                <div class="modal-actions">
-                    <button type="submit" class="btn primary">Kaydet</button>
-                    <button type="button" onclick="deleteTask()" class="btn danger">Sil</button>
-                    <button type="button" onclick="closeModal()" class="btn">İptal</button>
-                </div>
-            </form>
+                <!-- Diğer günleri de aynı şekilde ekleyin -->
+            </div>
+
+            <!-- Aksiyon Butonları -->
+            <div class="action-buttons">
+                <button onclick="exportPlan()" class="btn">
+                    <span>📤</span> Dışa Aktar
+                </button>
+                <button onclick="importPlan()" class="btn">
+                    <span>📥</span> İçe Aktar
+                </button>
+                <button onclick="syncToCalendar()" class="btn">
+                    <span>📅</span> Takvime Ekle
+                </button>
+            </div>
         </div>
+
+        <!-- Görev Ekleme/Düzenleme Modal -->
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <h2 id="taskModalTitle">Görev Ekle</h2>
+                <form id="taskForm" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="taskTitle">Başlık</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskDuration">Süre (dk)</label>
+                            <input type="number" id="taskDuration" min="5" step="5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="taskTime">Zaman</label>
+                            <select id="taskTime" required>
+                                <option value="sabah">Sabah</option>
+                                <option value="ogle">Öğle</option>
+                                <option value="aksam">Akşam</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="taskDay" value="pazartesi">
+                    <input type="hidden" id="taskId" value="">
+
+                    <div class="form-buttons">
+                        <button type="submit" onclick="addTask()" class="btn primary">Kaydet</button>
+                        <button type="button" onclick="closeModal('taskModal')" class="btn">İptal</button>
+                        <button type="button" onclick="deleteTask()" class="btn danger" id="deleteTaskBtn" style="display: none;">Sil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bildirim -->
+        <div id="notification" class="notification"></div>
     </div>
 </body>
 </html>
