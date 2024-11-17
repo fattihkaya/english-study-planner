@@ -6,7 +6,7 @@
     <title>İngilizce Çalışma Planlayıcısı</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
-    <!-- PWA için gerekli meta etiketleri -->
+    <!-- PWA meta etiketleri -->
     <meta name="theme-color" content="#3b82f6">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,62 +15,99 @@
 <body>
     <div class="container">
         <header class="planner-header">
-            <h1>Haftalık İngilizce Çalışma Planı</h1>
+            <h1>İngilizce Çalışma Planlayıcısı</h1>
             
+            <div class="view-controls">
+                <button onclick="switchView('weekly')" class="btn active">Haftalık Görünüm</button>
+                <button onclick="switchView('monthly')" class="btn">Aylık Görünüm</button>
+            </div>
+
             <div class="controls">
-                <button onclick="showProgress()" class="btn">📊 İlerleme Durumu</button>
-                <button onclick="exportToGoogleCalendar()" class="btn">📅 Google Takvim'e Ekle</button>
-                <button onclick="exportToOutlookCalendar()" class="btn">📅 Outlook Takvim'e Ekle</button>
-                <button onclick="loadSamplePlan()" class="btn">📋 Örnek Plan</button>
-                <input type="file" id="planUpload" accept=".json" style="display: none">
-                <button onclick="document.getElementById('planUpload').click()" class="btn">📥 Plan Yükle</button>
+                <button onclick="showProgress()" class="btn">📊 İlerleme</button>
+                <button onclick="exportToGoogleCalendar()" class="btn">📅 Google Takvim</button>
+                <button onclick="exportToOutlookCalendar()" class="btn">📅 Outlook</button>
+                <button onclick="showSamplePlan()" class="btn">📋 Örnek Plan</button>
+                <button onclick="showPlanUploadModal()" class="btn">📥 Plan Yükle</button>
+                <button onclick="addNewTask()" class="btn">➕ Görev Ekle</button>
             </div>
         </header>
 
-        <!-- İlerleme Durumu Modal -->
-        <div id="progressModal" class="modal">
-            <div class="modal-content">
-                <h2>İlerleme Durumu</h2>
-                <div class="progress-bar">
-                    <div id="progressBarFill" class="progress-bar-fill"></div>
-                </div>
-                <p id="progressText">%0 Tamamlandı</p>
-                <button onclick="closeProgressModal()" class="btn">Kapat</button>
+        <!-- Aylık Takvim Görünümü -->
+        <div id="monthlyView" class="calendar-view" style="display: none;">
+            <div class="calendar-header">
+                <button onclick="previousMonth()" class="btn">◀</button>
+                <h2 id="currentMonth">Kasım 2024</h2>
+                <button onclick="nextMonth()" class="btn">▶</button>
+            </div>
+            <div class="calendar-grid">
+                <!-- Günler JS ile doldurulacak -->
             </div>
         </div>
 
-        <div class="weekly-grid">
-            <!-- Her gün için kartlar -->
-            <div class="day-card" data-day="pazartesi">
-                <h2>Pazartesi</h2>
-                <div class="time-block">
-                    <h3>Sabah</h3>
-                    <div class="task">
-                        <input type="checkbox" id="task1" onchange="saveProgress()">
-                        <label for="task1">English with Lucy: Present Perfect (15dk)</label>
-                    </div>
-                    <!-- Diğer görevler -->
+        <!-- Haftalık Görünüm -->
+        <div id="weeklyView" class="weekly-grid">
+            <!-- Günler JS ile doldurulacak -->
+        </div>
+
+        <!-- Plan Yükleme Modal -->
+        <div id="planUploadModal" class="modal">
+            <div class="modal-content">
+                <h2>Plan Yükle</h2>
+                <div class="upload-area">
+                    <input type="file" id="planFile" accept=".json">
+                    <p>veya örnek planı kullanmak için buraya sürükleyin</p>
                 </div>
-                <!-- Diğer zaman blokları -->
+                <div class="button-group">
+                    <button onclick="uploadPlan()" class="btn">Yükle</button>
+                    <button onclick="closeModal('planUploadModal')" class="btn">İptal</button>
+                </div>
             </div>
-            <!-- Diğer günler -->
+        </div>
+
+        <!-- Task Düzenleme Modal -->
+        <div id="taskEditModal" class="modal">
+            <div class="modal-content">
+                <h2>Görev Düzenle</h2>
+                <form id="taskEditForm">
+                    <input type="hidden" id="taskId">
+                    <div class="form-group">
+                        <label>Başlık:</label>
+                        <input type="text" id="taskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Süre (dakika):</label>
+                        <input type="number" id="taskDuration" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gün:</label>
+                        <select id="taskDay" required>
+                            <option value="pazartesi">Pazartesi</option>
+                            <option value="sali">Salı</option>
+                            <option value="carsamba">Çarşamba</option>
+                            <option value="persembe">Perşembe</option>
+                            <option value="cuma">Cuma</option>
+                            <option value="cumartesi">Cumartesi</option>
+                            <option value="pazar">Pazar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Zaman:</label>
+                        <select id="taskTime" required>
+                            <option value="sabah">Sabah</option>
+                            <option value="ogle">Öğle</option>
+                            <option value="aksam">Akşam</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn">Kaydet</button>
+                        <button type="button" onclick="deleteTask()" class="btn btn-danger">Sil</button>
+                        <button type="button" onclick="closeModal('taskEditModal')" class="btn">İptal</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script src="app.js"></script>
-    <script>
-        // Service Worker kaydı
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker başarıyla kaydedildi');
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker kaydı başarısız:', error);
-                    });
-            });
-        }
-    </script>
 </body>
 </html>

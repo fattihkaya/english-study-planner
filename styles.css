@@ -92,6 +92,211 @@ body {
     margin: 50px auto;
 }
 
+.view-controls {
+    margin-bottom: 15px;
+}
+
+.view-controls .btn.active {
+    background-color: #2563eb;
+}
+
+/* Takvim görünümü */
+.calendar-view {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* ... Önceki stiller devam ediyor ... */
+
+/* Takvim Stilleri */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+    cursor: pointer;
+    background: white;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: #f3f4f6;
+}
+
+.calendar-day.has-tasks {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.task-count {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background-color: #3b82f6;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+/* Plan Yükleme Alanı */
+.upload-area {
+    border: 2px dashed #e5e7eb;
+    padding: 20px;
+    text-align: center;
+    margin: 15px 0;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.upload-area.drag-over {
+    border-color: #3b82f6;
+    background-color: #dbeafe;
+}
+
+/* Form Grupları */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Buton Grupları */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Task Kartları */
+.task-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.task-card .task-info {
+    flex: 1;
+}
+
+.task-card .task-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.task-card .task-duration {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.task-card .task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Bildirimler */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.notification.success {
+    background-color: #10b981;
+    color: white;
+}
+
+.notification.error {
+    background-color: #ef4444;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .calendar-grid {
+        gap: 2px;
+    }
+    
+    .task-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .task-card .task-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10px auto;
+    }
+}
+
 /* İlerleme çubuğu */
 .progress-bar {
     width: 100%;
