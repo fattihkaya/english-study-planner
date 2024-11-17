@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimeler | İngilizce Çalışma Planı</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <h1>İngilizce Çalışma Planı</h1>
+            <div class="nav-links">
+                <a href="index.html">Haftalık Plan</a>
+                <a href="progress.html">İlerleme</a>
+                <a href="content.html">Modern Family</a>
+                <a href="vocabulary.html" class="active">Kelimeler</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Üst Araç Çubuğu -->
+        <div class="vocab-toolbar">
+            <div class="search-box">
+                <input type="text" placeholder="Kelime ara...">
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn" onclick="syncWithAnki()">
+                    <span>🎴</span> Anki'ye Aktar
+                </button>
+                <button class="btn" onclick="syncWithQuizlet()">
+                    <span>📚</span> Quizlet'e Aktar
+                </button>
+                <button class="btn primary" onclick="addNewWord()">
+                    <span>+</span> Yeni Kelime
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtreleme -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>Kaynak:</label>
+                <select>
+                    <option>Tümü</option>
+                    <option>Modern Family</option>
+                    <option>BBC Learning</option>
+                    <option>Manuel Eklenen</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Sıralama:</label>
+                <select>
+                    <option>Yeniden Eskiye</option>
+                    <option>A-Z</option>
+                    <option>Öğrenme Durumu</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Kelime Listesi -->
+        <div class="vocabulary-list">
+            <div class="word-card">
+                <div class="word-header">
+                    <h3>appreciate</h3>
+                    <div class="word-badges">
+                        <span class="badge source">Modern Family</span>
+                        <span class="badge status">Yeni</span>
+                    </div>
+                </div>
+                <p class="word-definition">Takdir etmek, değer vermek</p>
+                <p class="word-example">"I really appreciate your help."</p>
+                <div class="word-actions">
+                    <button onclick="editWord()" class="btn small">Düzenle</button>
+                    <button onclick="reviewWord()" class="btn small">Tekrar Et</button>
+                    <button onclick="exportWord()" class="btn small">Dışa Aktar</button>
+                </div>
+            </div>
+
+            <!-- Diğer kelime kartları -->
+        </div>
+
+        <!-- Kelime Ekleme/Düzenleme Modal -->
+        <div id="wordModal" class="modal">
+            <div class="modal-content">
+                <h2>Yeni Kelime Ekle</h2>
+                <form id="wordForm">
+                    <div class="form-group">
+                        <label>Kelime</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Anlamı</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Örnek Cümle</label>
+                        <textarea></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Kaynak</label>
+                        <select>
+                            <option>Modern Family</option>
+                            <option>BBC Learning</option>
+                            <option>Manuel</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notlar</label>
+                        <textarea></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn primary">Kaydet</button>
+                        <button type="button" class="btn">İptal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
