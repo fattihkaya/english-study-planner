@@ -1,0 +1,256 @@
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İngilizce Çalışma Planlayıcısı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #3b82f6;
+            --success: #22c55e;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --card: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --primary: #60a5fa;
+            --secondary: #3b82f6;
+            --success: #4ade80;
+            --background: #0f172a;
+            --text: #e2e8f0;
+            --card: #1e293b;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            transition: background 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--card);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background: var(--card);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .plan-view {
+            background: var(--card);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .compact-json {
+            font-family: monospace;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            height: 100px;
+            resize: none;
+            width: 100%;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .time-block {
+            background: var(--background);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin: 0.25rem 0;
+        }
+
+        .floating-menu {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .float-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>İngilizce Planlayıcı</h1>
+            <div class="quick-actions">
+                <button class="btn btn-outline" id="themeToggle">🌙</button>
+                <button class="btn btn-outline" onclick="syncWithDrive()">🔄 Senkronize</button>
+                <button class="btn btn-primary" onclick="showNotifications()">🔔</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <h3>Hızlı Erişim</h3>
+                <div id="quickAccess"></div>
+            </aside>
+
+            <section class="plan-view">
+                <div id="weeklyPlan"></div>
+            </section>
+        </main>
+    </div>
+
+    <div class="floating-menu">
+        <button class="float-btn" onclick="createNewPlan()">+</button>
+        <button class="float-btn" onclick="exportPlan()">↓</button>
+    </div>
+
+    <script>
+        // Service Worker Kaydı
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('SW Registered'))
+                .catch(err => console.log('SW Error:', err));
+        }
+
+        // Push Notification İzni
+        async function requestNotificationPermission() {
+            if ('Notification' in window) {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    // Push subscription işlemleri
+                }
+            }
+        }
+
+        // Dark/Light Mode Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.setAttribute('data-theme', 
+                document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        });
+
+        // Local Storage İşlemleri
+        class StorageManager {
+            static savePlan(plan) {
+                localStorage.setItem('currentPlan', JSON.stringify(plan));
+            }
+
+            static loadPlan() {
+                return JSON.parse(localStorage.getItem('currentPlan'));
+            }
+        }
+
+        // Google Drive Senkronizasyonu
+        async function syncWithDrive() {
+            // Google Drive API implementasyonu gelecek
+        }
+
+        // Plan Oluşturma
+        function createNewPlan() {
+            // Plan oluşturma modalı
+        }
+
+        // Plan Dışa Aktarma
+        function exportPlan() {
+            // Excel ve Calendar export
+        }
+    </script>
+</body>
+</html>
