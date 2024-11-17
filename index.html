@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İngilizce Çalışma Planı</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="js/common.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/content.js"></script>
+<!-- Önce common.js yüklensin -->
+	<script src="js/common.js"></script>
+	<!-- Sonra diğer script'ler -->
+	<script src="js/app.js"></script>
+	<script src="js/content.js"></script>
+	<script src="js/vocabulary.js"></script>
+	<script src="js/progress.js"></script>
 </head>
 <body>
     <div class="container">
@@ -81,7 +85,73 @@
                     </div>
                 </div>
 
-                <!-- Diğer günleri de aynı şekilde ekleyin -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <h2>Carsamba</h2>
+                        <button onclick="openAddTaskModal('carsamba')" class="add-btn">+</button>
+                    </div>
+                    
+                    <div class="time-block">
+                        <h3>☀️ Sabah</h3>
+                        <div id="carsamba-sabah" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌤️ Öğle</h3>
+                        <div id="carsamba-ogle" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌙 Akşam</h3>
+                        <div id="carsamba-aksam" class="task-list"></div>
+                    </div>
+                </div>
+				
+				                <div class="day-card">
+                    <div class="day-header">
+                        <h2>Persembe</h2>
+                        <button onclick="openAddTaskModal('persembe')" class="add-btn">+</button>
+                    </div>
+                    
+                    <div class="time-block">
+                        <h3>☀️ Sabah</h3>
+                        <div id="persembe-sabah" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌤️ Öğle</h3>
+                        <div id="persembe-ogle" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌙 Akşam</h3>
+                        <div id="persembe-aksam" class="task-list"></div>
+                    </div>
+                </div>
+				
+				                <div class="day-card">
+                    <div class="day-header">
+                        <h2>Cuma</h2>
+                        <button onclick="openAddTaskModal('cuma')" class="add-btn">+</button>
+                    </div>
+                    
+                    <div class="time-block">
+                        <h3>☀️ Sabah</h3>
+                        <div id="cuma-sabah" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌤️ Öğle</h3>
+                        <div id="cuma-ogle" class="task-list"></div>
+                    </div>
+
+                    <div class="time-block">
+                        <h3>🌙 Akşam</h3>
+                        <div id="cuma-aksam" class="task-list"></div>
+                    </div>
+                </div>
+				
+
             </div>
 
             <!-- Aksiyon Butonları -->
