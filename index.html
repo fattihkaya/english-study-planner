@@ -3,40 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İngilizce Çalışma Planlayıcısı</title>
+    <title>İngilizce Çalışma Planı</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="app.js" defer></script>
 </head>
 <body>
     <div class="container">
         <h1>İngilizce Çalışma Planı</h1>
         
-        <div class="controls">
+        <div class="toolbar">
             <button onclick="switchView('weekly')" class="btn active">Haftalık Görünüm</button>
             <button onclick="switchView('monthly')" class="btn">Aylık Görünüm</button>
-            <button onclick="openFileUpload()" class="btn">📥 Plan Yükle</button>
-            <button onclick="savePlanToFile()" class="btn">💾 Kaydet</button>
+            <button onclick="openFileUpload()" class="btn">Plan Yükle</button>
+            <button onclick="exportPlan()" class="btn">Kaydet</button>
             <button onclick="exportToGoogleCalendar()" class="btn">Google Takvim</button>
         </div>
 
-        <input type="file" id="fileInput" accept=".json" style="display: none" onchange="handleFileUpload(event)">
+        <input type="file" id="fileInput" accept=".json" style="display: none">
 
-        <div id="weeklyView" class="view active">
-            <div class="days-container">
-                <!-- Günler JavaScript ile doldurulacak -->
+        <div id="weeklyView" class="view-container active">
+            <div class="days-grid">
+                <!-- Günler JS ile doldurulacak -->
             </div>
         </div>
 
-        <div id="monthlyView" class="view">
-            <div class="month-header">
-                <button onclick="changeMonth(-1)">◀</button>
-                <h2 id="currentMonth"></h2>
-                <button onclick="changeMonth(1)">▶</button>
-            </div>
-            <div class="calendar-grid">
-                <!-- Takvim JavaScript ile doldurulacak -->
+        <div id="monthlyView" class="view-container">
+            <div class="calendar">
+                <!-- Takvim JS ile doldurulacak -->
             </div>
         </div>
     </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
