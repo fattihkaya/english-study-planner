@@ -1,389 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --primary: #3a86ff;
-            --success: #2ecc71;
-            --warning: #f1c40f;
-            --danger: #e74c3c;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            background: #f5f6fa;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .planner-header {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-outline {
-            background: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .weekly-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .day-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
-        }
-
-        .day-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .day-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #eee;
-        }
-
-        .time-block {
-            margin: 1rem 0;
-            padding: 0.5rem;
-            border-radius: 8px;
-            background: var(--light);
-        }
-
-        .time-block h3 {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            background: white;
-            border-radius: 6px;
-            margin: 0.5rem 0;
-            border: 1px solid #eee;
-        }
-		
-		.btn-success {
-			background: #28a745;
-			color: white;
-		}
-
-		.btn-success:hover {
-			background: #218838;
-		}
-
-        .json-input {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .json-input textarea {
-            width: 300px;
-            height: 100px;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            resize: none;
-        }
-
-        @media (max-width: 768px) {
-            .weekly-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .json-input {
-                position: static;
-                margin-top: 2rem;
-                flex-direction: column;
-            }
-        }
-		
-		
-    </style>
+    <title>İngilizce Çalışma Planlayıcısı</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <!-- PWA için gerekli meta etiketleri -->
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 </head>
 <body>
     <div class="container">
-        <div class="planner-header">
+        <header class="planner-header">
             <h1>Haftalık İngilizce Çalışma Planı</h1>
-		<div class="controls">
-			<button class="btn btn-outline" onclick="showExamplePlan()">
-				📋 Örnek Plan
-			</button>
-			<button class="btn btn-outline" onclick="loadJSONPlan()">
-				📥 Plan Yükle
-			</button>
-			<button class="btn btn-success" onclick="exportToExcel(JSON.parse(document.getElementById('jsonInput').value))">
-				📊 Excel'e Aktar
-			</button>
-			<button class="btn btn-primary" onclick="exportToCalendar()">
-				📅 Takvime Ekle
-			</button>
-		</div>
+            
+            <div class="controls">
+                <button onclick="showProgress()" class="btn">📊 İlerleme Durumu</button>
+                <button onclick="exportToGoogleCalendar()" class="btn">📅 Google Takvim'e Ekle</button>
+                <button onclick="exportToOutlookCalendar()" class="btn">📅 Outlook Takvim'e Ekle</button>
+                <button onclick="loadSamplePlan()" class="btn">📋 Örnek Plan</button>
+                <input type="file" id="planUpload" accept=".json" style="display: none">
+                <button onclick="document.getElementById('planUpload').click()" class="btn">📥 Plan Yükle</button>
+            </div>
+        </header>
+
+        <!-- İlerleme Durumu Modal -->
+        <div id="progressModal" class="modal">
+            <div class="modal-content">
+                <h2>İlerleme Durumu</h2>
+                <div class="progress-bar">
+                    <div id="progressBarFill" class="progress-bar-fill"></div>
+                </div>
+                <p id="progressText">%0 Tamamlandı</p>
+                <button onclick="closeProgressModal()" class="btn">Kapat</button>
+            </div>
         </div>
-		
 
         <div class="weekly-grid">
-            <!-- Günlük kartlar buraya gelecek -->
-        </div>
-
-        <div class="json-input">
-            <textarea id="jsonInput" placeholder="JSON planınızı buraya yapıştırın..."></textarea>
-            <button class="btn btn-primary" onclick="parseAndLoad()">Yükle</button>
+            <!-- Her gün için kartlar -->
+            <div class="day-card" data-day="pazartesi">
+                <h2>Pazartesi</h2>
+                <div class="time-block">
+                    <h3>Sabah</h3>
+                    <div class="task">
+                        <input type="checkbox" id="task1" onchange="saveProgress()">
+                        <label for="task1">English with Lucy: Present Perfect (15dk)</label>
+                    </div>
+                    <!-- Diğer görevler -->
+                </div>
+                <!-- Diğer zaman blokları -->
+            </div>
+            <!-- Diğer günler -->
         </div>
     </div>
 
+    <script src="app.js"></script>
     <script>
-        // JSON yükleme ve işleme fonksiyonları gelecek
+        // Service Worker kaydı
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker başarıyla kaydedildi');
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker kaydı başarısız:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
-
-<script>
-// Örnek JSON formatı
-const examplePlan = {
-    weekOf: "2024-01-15",
-    topics: {
-        grammar: ["Present Perfect", "Since/For Usage"],
-        goals: ["30 new words", "2 Modern Family episodes"]
-    },
-    days: {
-        monday: {
-            morning: [{
-                task: "BBC Learning English - Present Perfect",
-                duration: "15dk",
-                type: "study"
-            }],
-            noon: [{
-                task: "Modern Family Episode 1",
-                duration: "25dk",
-                type: "watch"
-            }],
-            evening: [{
-                task: "Quizlet Practice",
-                duration: "15dk",
-                type: "practice"
-            }]
-        },
-        // Diğer günler...
-    }
-};
-
-// JSON planı yükleme
-function loadJSONPlan() {
-    const jsonStr = document.getElementById('jsonInput').value;
-    try {
-        const plan = JSON.parse(jsonStr);
-        renderPlan(plan);
-    } catch (e) {
-        alert('Geçersiz JSON formatı. Lütfen kontrol edin.');
-    }
-}
-
-// Planı görüntüleme
-function renderPlan(plan) {
-    const grid = document.querySelector('.weekly-grid');
-    grid.innerHTML = ''; // Mevcut içeriği temizle
-
-    Object.entries(plan.days).forEach(([day, schedule]) => {
-        const dayCard = createDayCard(day, schedule);
-        grid.appendChild(dayCard);
-    });
-}
-
-// Gün kartı oluşturma
-function createDayCard(day, schedule) {
-    const card = document.createElement('div');
-    card.className = 'day-card';
-    
-    const dayNames = {
-        monday: 'Pazartesi',
-        tuesday: 'Salı',
-        wednesday: 'Çarşamba',
-        thursday: 'Perşembe',
-        friday: 'Cuma'
-    };
-
-    card.innerHTML = `
-        <div class="day-header">
-            <h2>${dayNames[day]}</h2>
-        </div>
-        ${createTimeBlock('Sabah', schedule.morning)}
-        ${createTimeBlock('Öğle', schedule.noon)}
-        ${createTimeBlock('Akşam', schedule.evening)}
-    `;
-
-    return card;
-}
-
-// Zaman bloğu oluşturma
-function createTimeBlock(title, tasks) {
-    if (!tasks) return '';
-    
-    return `
-        <div class="time-block">
-            <h3>${title}</h3>
-            ${tasks.map(task => `
-                <div class="task-item">
-                    <input type="checkbox">
-                    <span>${task.task} (${task.duration})</span>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// Google Calendar'a aktarma
-function exportToCalendar() {
-    const plan = JSON.parse(document.getElementById('jsonInput').value);
-    const events = createCalendarEvents(plan);
-    
-    // Google Calendar URL oluştur
-    const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
-    events.forEach(event => {
-        const url = `${baseUrl}&text=${encodeURIComponent(event.title)}&dates=${event.start}/${event.end}`;
-        window.open(url, '_blank');
-    });
-}
-
-// Excel dışa aktarma fonksiyonunu ekliyorum:
-
-function exportToExcel(plan) {
-    // CSV formatında veri oluştur
-    let csv = 'Saat,Pazartesi,Salı,Çarşamba,Perşembe,Cuma\n';
-    
-    const timeSlots = ['Sabah (09:00-12:00)', 'Öğle (12:00-17:00)', 'Akşam (17:00-21:00)'];
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    const timeBlocks = ['morning', 'noon', 'evening'];
-    
-    timeSlots.forEach((slot, index) => {
-        let row = [slot];
-        days.forEach(day => {
-            const tasks = plan.days[day][timeBlocks[index]];
-            const taskText = tasks ? tasks.map(t => `${t.task} (${t.duration})`).join('\n') : '';
-            row.push(taskText);
-        });
-        csv += row.join(',') + '\n';
-    });
-
-    // Excel dosyası oluştur ve indir
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `ingilizce_calisma_plani_${plan.weekOf}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Takvim olayları oluşturma
-function createCalendarEvents(plan) {
-    const events = [];
-    const weekStart = new Date(plan.weekOf);
-    
-    Object.entries(plan.days).forEach(([day, schedule], dayIndex) => {
-        const date = new Date(weekStart);
-        date.setDate(date.getDate() + dayIndex);
-        
-        ['morning', 'noon', 'evening'].forEach((timeBlock, blockIndex) => {
-            if (schedule[timeBlock]) {
-                schedule[timeBlock].forEach(task => {
-                    events.push({
-                        title: task.task,
-                        start: formatDate(date, blockIndex),
-                        end: formatDate(date, blockIndex, 30)
-                    });
-                });
-            }
-        });
-    });
-    
-    return events;
-}
-
-// Tarih formatlama
-function formatDate(date, blockIndex, addMinutes = 0) {
-    const hours = [9, 12, 18][blockIndex];
-    const d = new Date(date);
-    d.setHours(hours, addMinutes, 0, 0);
-    return d.toISOString().replace(/[-:]/g, '').slice(0, 15);
-}
-
-// Başlangıçta örnek planı göster
-document.getElementById('jsonInput').value = JSON.stringify(examplePlan, null, 2);
-</script>
