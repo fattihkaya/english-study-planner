@@ -1,298 +1,242 @@
 // Veri yapısı
 let planData = {
-    tasks: {},
-    progress: {
-        weekly: {},
-        monthly: {}
-    },
+    tasks: [],
     notes: [],
-    settings: {
-        lastUpdate: null
-    }
+    progress: {
+        weeklyGoal: 360, // dakika
+        totalTime: 0,
+        completedTasks: 0
+    },
+    activities: []
 };
+
+let currentEditingTask = null;
 
 // Sayfa yüklendiğinde
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
+    renderAllTasks();
+    updateProgress();
+    renderNotes();
     setupEventListeners();
-    setupTabNavigation();
 });
 
-// Temel event listener'ları kur
+// Event listener'ları kur
 function setupEventListeners() {
-    // Checkbox değişikliklerini dinle
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
-            updateTaskStatus(e.target);
-            updateProgress();
-            saveData();
-        });
+    // Task checkbox'ları için event delegation
+    document.addEventListener('change', (e) => {
+        if (e.target.matches('.task-checkbox')) {
+            handleTaskCompletion(e.target);
+        }
+    });
+
+    // Task düzenleme için event delegation
+    document.addEventListener('click', (e) => {
+        if (e.target.matches('.task-edit-btn')) {
+            const taskId = e.target.closest('.task-item').dataset.taskId;
+            editTask(taskId);
+        }
+    });
+
+    // Task form submit
+    document.getElementById('taskForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveTaskFromModal();
     });
 }
 
-// Sekme navigasyonu
-function setupTabNavigation() {
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Aktif sekmeyi değiştir
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // İlgili içeriği göster
-            const targetId = tab.dataset.tab;
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(targetId).classList.add('active');
-        });
+// Sekme değiştirme
+function switchTab(tabId) {
+    // Tüm sekmeleri gizle
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
     });
-}
+    
+    // Tüm butonların aktif classını kaldır
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Seçili sekmeyi göster
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
 
-// Task durumunu güncelle
-function updateTaskStatus(checkbox) {
-    const taskId = checkbox.name;
-    const isCompleted = checkbox.checked;
-    
-    planData.tasks[taskId] = {
-        completed: isCompleted,
-        completedAt: isCompleted ? new Date().toISOString() : null
-    };
-    
-    // Görsel geri bildirim
-    const taskElement = checkbox.closest('.task');
-    if (isCompleted) {
-        taskElement.classList.add('completed');
-    } else {
-        taskElement.classList.remove('completed');
+    // Sekmeye özel güncellemeler
+    if (tabId === 'progress') {
+        updateProgress();
     }
+}
+
+// Task işlemleri
+function addTask(day, time = 'sabah') {
+    currentEditingTask = null;
+    document.getElementById('taskForm').reset();
+    document.getElementById('taskModal').style.display = 'block';
+    document.getElementById('taskTime').value = time;
+}
+
+function editTask(taskId) {
+    const task = planData.tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    currentEditingTask = task;
     
-    showNotification(isCompleted ? 'Görev tamamlandı! 🎉' : 'Görev yeniden açıldı');
+    document.getElementById('taskTitle').value = task.title;
+    document.getElementById('taskDuration').value = task.duration;
+    document.getElementById('taskTime').value = task.time;
+    
+    document.getElementById('taskModal').style.display = 'block';
 }
 
-// İlerlemeyi güncelle
+function saveTaskFromModal() {
+    const title = document.getElementById('taskTitle').value;
+    const duration = parseInt(document.getElementById('taskDuration').value);
+    const time = document.getElementById('taskTime').value;
+
+    if (currentEditingTask) {
+        // Mevcut görevi güncelle
+        currentEditingTask.title = title;
+        currentEditingTask.duration = duration;
+        currentEditingTask.time = time;
+    } else {
+        // Yeni görev ekle
+        const newTask = {
+            id: Date.now().toString(),
+            title,
+            duration,
+            time,
+            completed: false,
+            day: document.querySelector('.day-card.active').dataset.day
+        };
+        planData.tasks.push(newTask);
+    }
+
+    saveData();
+    renderAllTasks();
+    closeTaskModal();
+    showNotification('Görev kaydedildi');
+}
+
+function deleteTask() {
+    if (!currentEditingTask) return;
+
+    planData.tasks = planData.tasks.filter(t => t.id !== currentEditingTask.id);
+    saveData();
+    renderAllTasks();
+    closeTaskModal();
+    showNotification('Görev silindi');
+}
+
+// İlerleme takibi
 function updateProgress() {
-    document.querySelectorAll('.day-card').forEach(dayCard => {
-        const total = dayCard.querySelectorAll('.task').length;
-        const completed = dayCard.querySelectorAll('input[type="checkbox"]:checked').length;
-        
-        dayCard.querySelector('.completion').textContent = `${completed}/${total}`;
-    });
+    const totalTasks = planData.tasks.length;
+    const completedTasks = planData.tasks.filter(t => t.completed).length;
+    const totalTime = planData.tasks.reduce((acc, t) => acc + t.duration, 0);
+    const completedTime = planData.tasks
+        .filter(t => t.completed)
+        .reduce((acc, t) => acc + t.duration, 0);
+
+    // Progress bar'ları güncelle
+    const timeProgress = (completedTime / planData.progress.weeklyGoal) * 100;
+    const taskProgress = (completedTasks / totalTasks) * 100;
+
+    document.querySelector('#progress .progress-bar .progress').style.width = `${timeProgress}%`;
+    document.querySelectorAll('#progress .stats span')[0].textContent = 
+        `${completedTime}/${planData.progress.weeklyGoal} dakika`;
+    document.querySelectorAll('#progress .stats span')[1].textContent = 
+        `${Math.round(timeProgress)}%`;
+
+    // Aktivite geçmişini güncelle
+    renderActivityLog();
 }
 
-// LocalStorage işlemleri
+// Not işlemleri
+function addNote() {
+    const input = document.getElementById('noteInput');
+    const text = input.value.trim();
+    
+    if (!text) return;
+
+    const note = {
+        id: Date.now().toString(),
+        text,
+        date: new Date().toISOString()
+    };
+
+    planData.notes.push(note);
+    saveData();
+    renderNotes();
+    input.value = '';
+    showNotification('Not eklendi');
+}
+
+function renderNotes() {
+    const notesList = document.querySelector('.notes-list');
+    notesList.innerHTML = planData.notes
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .map(note => `
+            <div class="note-item">
+                <p>${note.text}</p>
+                <div class="note-footer">
+                    <span>${new Date(note.date).toLocaleDateString()}</span>
+                    <button onclick="deleteNote('${note.id}')" class="delete-btn">Sil</button>
+                </div>
+            </div>
+        `)
+        .join('');
+}
+
+function deleteNote(noteId) {
+    planData.notes = planData.notes.filter(n => n.id !== noteId);
+    saveData();
+    renderNotes();
+    showNotification('Not silindi');
+}
+
+// Veri yönetimi
 function saveData() {
-    planData.settings.lastUpdate = new Date().toISOString();
     localStorage.setItem('studyPlan', JSON.stringify(planData));
-    showNotification('Veriler kaydedildi');
 }
 
 function loadData() {
     const saved = localStorage.getItem('studyPlan');
     if (saved) {
         planData = JSON.parse(saved);
-        restoreTaskStates();
-        updateProgress();
     }
 }
 
-// Kaydedilmiş görev durumlarını geri yükle
-function restoreTaskStates() {
-    Object.entries(planData.tasks).forEach(([taskId, data]) => {
-        const checkbox = document.querySelector(`input[name="${taskId}"]`);
-        if (checkbox) {
-            checkbox.checked = data.completed;
-            if (data.completed) {
-                checkbox.closest('.task').classList.add('completed');
-            }
-        }
-    });
-}
-
-// Veri dışa/içe aktarma
-function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + 
-                   encodeURIComponent(JSON.stringify(planData, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "ingilizce-plan.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-}
-
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    
-    input.onchange = e => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = event => {try {
-                const importedData = JSON.parse(event.target.result);
-                planData = importedData;
-                saveData();
-                restoreTaskStates();
-                updateProgress();
-                showNotification('Plan başarıyla içe aktarıldı');
-            } catch (error) {
-                showNotification('Plan yüklenirken hata oluştu!', 'error');
-            }
-        };
-        
-        reader.readAsText(file);
-    };
-    
-    input.click();
-}
-
-// Google Calendar Senkronizasyonu
-function syncWithCalendar() {
-    const tasks = document.querySelectorAll('.task');
-    if (tasks.length === 0) {
-        showNotification('Aktarılacak görev bulunamadı', 'error');
-        return;
-    }
-
-    tasks.forEach(task => {
-        const title = task.querySelector('.task-title').textContent;
-        const duration = parseInt(task.querySelector('.task-duration').textContent);
-        
-        const startTime = new Date();
-        const endTime = new Date(startTime.getTime() + duration * 60000);
-
-        const calendarUrl = 
-            `https://calendar.google.com/calendar/render?` +
-            `action=TEMPLATE&` +
-            `text=${encodeURIComponent('🇬🇧 ' + title)}&` +
-            `dates=${startTime.toISOString().replace(/[-:.]/g, '')}/${endTime.toISOString().replace(/[-:.]/g, '')}&` +
-            `details=${encodeURIComponent('İngilizce Çalışma Planı')}`;
-
-        window.open(calendarUrl, '_blank');
-    });
-}
-
-// Bildirim gösterme
-function showNotification(message, type = 'success') {
+// Yardımcı fonksiyonlar
+function showNotification(message) {
     const notification = document.getElementById('notification');
-    const messageElement = notification.querySelector('.notification-message');
-    
-    notification.className = `notification ${type}`;
-    messageElement.textContent = message;
-    
-    notification.style.display = 'block';
+    notification.textContent = message;
+    notification.classList.add('show');
     
     setTimeout(() => {
-        notification.style.display = 'none';
+        notification.classList.remove('show');
     }, 3000);
 }
 
-// İlerleme takibi için haftalık istatistikler
-function calculateWeeklyStats() {
-    const stats = {
-        totalTasks: 0,
-        completedTasks: 0,
-        totalTime: 0,
-        completedTime: 0
-    };
-
-    document.querySelectorAll('.task').forEach(task => {
-        const duration = parseInt(task.querySelector('.task-duration').textContent);
-        const isCompleted = task.querySelector('input[type="checkbox"]').checked;
-        
-        stats.totalTasks++;
-        stats.totalTime += duration;
-        
-        if (isCompleted) {
-            stats.completedTasks++;
-            stats.completedTime += duration;
-        }
-    });
-
-    return stats;
+function closeTaskModal() {
+    document.getElementById('taskModal').style.display = 'none';
+    currentEditingTask = null;
 }
 
-// Progress sekmesi için grafik verilerini hazırla
-function updateProgressTab() {
-    const stats = calculateWeeklyStats();
-    const progressSection = document.getElementById('progress');
-    
-    progressSection.innerHTML = `
-        <div class="progress-stats">
-            <div class="stat-card">
-                <h3>Tamamlanan Görevler</h3>
-                <div class="stat-value">${stats.completedTasks}/${stats.totalTasks}</div>
-                <div class="progress-bar">
-                    <div class="progress" style="width: ${(stats.completedTasks/stats.totalTasks*100)}%"></div>
-                </div>
+// Calendar entegrasyonu
+function syncToCalendar() {
+    // Google Calendar entegrasyonu burada olacak
+}
+
+// Aktivite geçmişi
+function renderActivityLog() {
+    const logList = document.querySelector('.log-list');
+    logList.innerHTML = planData.activities
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .map(activity => `
+            <div class="activity-item">
+                <span class="activity-icon">${activity.type === 'complete' ? '✅' : '🔄'}</span>
+                <span class="activity-text">${activity.text}</span>
+                <span class="activity-date">${new Date(activity.date).toLocaleDateString()}</span>
             </div>
-            
-            <div class="stat-card">
-                <h3>Toplam Çalışma Süresi</h3>
-                <div class="stat-value">${stats.completedTime} dk</div>
-                <div class="sub-text">Hedef: ${stats.totalTime} dk</div>
-            </div>
-        </div>
-    `;
+        `)
+        .join('');
 }
-
-// Not ekleme fonksiyonu
-function addNote() {
-    const notesContainer = document.querySelector('.notes-container');
-    const noteText = document.getElementById('noteInput').value;
-    
-    if (!noteText.trim()) return;
-    
-    const note = {
-        id: Date.now(),
-        text: noteText,
-        createdAt: new Date().toISOString()
-    };
-    
-    planData.notes.push(note);
-    saveData();
-    
-    renderNote(note);
-    document.getElementById('noteInput').value = '';
-}
-
-// Not render fonksiyonu
-function renderNote(note) {
-    const noteElement = document.createElement('div');
-    noteElement.className = 'note-card';
-    noteElement.innerHTML = `
-        <p>${note.text}</p>
-        <div class="note-footer">
-            <span class="note-date">${new Date(note.createdAt).toLocaleDateString()}</span>
-            <button onclick="deleteNote(${note.id})" class="btn-delete">Sil</button>
-        </div>
-    `;
-    
-    document.querySelector('.notes-container').prepend(noteElement);
-}
-
-// Not silme fonksiyonu
-function deleteNote(noteId) {
-    planData.notes = planData.notes.filter(note => note.id !== noteId);
-    saveData();
-    document.querySelector('.notes-container').innerHTML = '';
-    planData.notes.forEach(renderNote);
-}
-
-// Notları yükle
-function loadNotes() {
-    if (planData.notes) {
-        document.querySelector('.notes-container').innerHTML = '';
-        planData.notes.forEach(renderNote);
-    }
-}
-
-// Sayfa yüklendiğinde çalışacak ek fonksiyonlar
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    setupEventListeners();
-    setupTabNavigation();
-    loadNotes();
-    updateProgressTab();
-});
