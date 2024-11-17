@@ -68,63 +68,52 @@ function switchTab(tabId) {
 }
 
 // Task işlemleri
-function addTask(day, time = 'sabah') {
-    currentEditingTask = null;
-    document.getElementById('taskForm').reset();
-    document.getElementById('taskModal').style.display = 'block';
-    document.getElementById('taskTime').value = time;
-}
+// Görev işlemleri - app.js
+let tasks = [];
 
-function editTask(taskId) {
-    const task = planData.tasks.find(t => t.id === taskId);
-    if (!task) return;
-
-    currentEditingTask = task;
-    
-    document.getElementById('taskTitle').value = task.title;
-    document.getElementById('taskDuration').value = task.duration;
-    document.getElementById('taskTime').value = task.time;
-    
-    document.getElementById('taskModal').style.display = 'block';
-}
-
-function saveTaskFromModal() {
+function addTask() {
     const title = document.getElementById('taskTitle').value;
-    const duration = parseInt(document.getElementById('taskDuration').value);
+    const duration = document.getElementById('taskDuration').value;
     const time = document.getElementById('taskTime').value;
 
-    if (currentEditingTask) {
-        // Mevcut görevi güncelle
-        currentEditingTask.title = title;
-        currentEditingTask.duration = duration;
-        currentEditingTask.time = time;
-    } else {
-        // Yeni görev ekle
-        const newTask = {
-            id: Date.now().toString(),
+    if(title && duration && time) {
+        tasks.push({
+            id: Date.now(),
             title,
             duration,
             time,
-            completed: false,
-            day: document.querySelector('.day-card.active').dataset.day
-        };
-        planData.tasks.push(newTask);
+            completed: false
+        });
+        saveTasks();
+        closeModal('taskModal');
+        renderTasks();
     }
-
-    saveData();
-    renderAllTasks();
-    closeTaskModal();
-    showNotification('Görev kaydedildi');
 }
 
-function deleteTask() {
-    if (!currentEditingTask) return;
+function deleteTask(taskId) {
+    tasks = tasks.filter(task => task.id !== taskId);
+    saveTasks();
+    renderTasks();
+}
 
-    planData.tasks = planData.tasks.filter(t => t.id !== currentEditingTask.id);
-    saveData();
-    renderAllTasks();
-    closeTaskModal();
-    showNotification('Görev silindi');
+function toggleTask(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if(task) {
+        task.completed = !task.completed;
+        saveTasks();
+        renderTasks();
+    }
+}
+
+function saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+    const saved = localStorage.getItem('tasks');
+    if(saved) {
+        tasks = JSON.parse(saved);
+    }
 }
 
 // İlerleme takibi
