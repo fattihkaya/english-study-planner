@@ -1,133 +1,218 @@
-/* Temel stiller */
+/* Temel Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+:root {
+    /* Ana Renkler */
+    --primary: #0066ff;
+    --primary-dark: #0052cc;
+    --success: #00b894;
+    --warning: #fdcb6e;
+    --danger: #ff7675;
+    
+    /* Nötr Renkler */
+    --background: #f8f9fa;
+    --surface: #ffffff;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --border: #dfe6e9;
+    
+    /* Boyutlar */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Gölgeler */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+}
+
 body {
-    font-family: -apple-system, system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    background: #f0f2f5;
-    padding: 20px;
+    color: var(--text);
+    background: var(--background);
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: var(--spacing-md);
 }
 
-/* Başlık */
+/* Header Stili */
+header {
+    margin-bottom: var(--spacing-xl);
+}
+
 h1 {
     text-align: center;
-    margin-bottom: 30px;
-    color: #1a1a1a;
+    color: var(--text);
+    margin-bottom: var(--spacing-lg);
+    font-size: 2rem;
 }
 
-/* Toolbar */
-.toolbar {
+/* Sekmeler */
+.tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tab {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Aksiyon Butonları */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
     flex-wrap: wrap;
 }
 
 .btn {
-    padding: 10px 20px;
-    background: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
     cursor: pointer;
-    font-size: 14px;
+    transition: all 0.2s ease;
 }
 
 .btn:hover {
-    background: #1557b0;
+    background: var(--background);
+    border-color: var(--primary);
 }
 
-.btn.active {
-    background: #1557b0;
-}
-
-/* Görünüm containerları */
-.view-container {
-    display: none;
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.view-container.active {
-    display: block;
-}
-
-/* Haftalık görünüm */
-.days-grid {
+/* Gün Kartları */
+.week-view {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-md);
 }
 
 .day-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
 }
 
-.day-card h3 {
-    margin-bottom: 10px;
-    color: #1a73e8;
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--primary);
 }
 
-/* Task stilleri */
+/* Zaman Blokları */
+.time-block {
+    margin-bottom: var(--spacing-md);
+}
+
+.time-block h3 {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Görevler */
 .task {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--background);
+    border-radius: 6px;
+    margin-bottom: var(--spacing-sm);
+    cursor: pointer;
 }
 
-.task:last-child {
-    border-bottom: none;
+.task-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
-.task input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+.task-title {
+    font-weight: 500;
 }
 
-/* Aylık görünüm */
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+.task-duration {
+    font-size: 0.8rem;
+    color: var(--text-light);
 }
 
-.calendar-header {
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    color: #1a73e8;
+/* Bildirimler */
+.notification {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--surface);
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    display: none;
+    animation: slideIn 0.3s ease;
 }
 
-.calendar-day {
-    aspect-ratio: 1;
-    border: 1px solid #ddd;
-    padding: 5px;
-    text-align: center;
+@keyframes slideIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
-/* Mobil uyumluluk */
+/* Mobil Uyumluluk */
 @media (max-width: 768px) {
-    .toolbar {
+    .actions {
         flex-direction: column;
     }
     
     .btn {
         width: 100%;
+    }
+    
+    .day-card {
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #1a1a1a;
+        --surface: #2d2d2d;
+        --text: #ffffff;
+        --text-light: #a0a0a0;
+        --border: #404040;
     }
 }

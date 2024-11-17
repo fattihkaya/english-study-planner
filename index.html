@@ -3,34 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İngilizce Çalışma Planı</title>
+    <title>İngilizce Çalışma Planlayıcısı</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="container">
-        <h1>İngilizce Çalışma Planı</h1>
-        
-        <div class="toolbar">
-            <button onclick="switchView('weekly')" class="btn active">Haftalık Görünüm</button>
-            <button onclick="switchView('monthly')" class="btn">Aylık Görünüm</button>
-            <button onclick="openFileUpload()" class="btn">Plan Yükle</button>
-            <button onclick="exportPlan()" class="btn">Kaydet</button>
-            <button onclick="exportToGoogleCalendar()" class="btn">Google Takvim</button>
-        </div>
+        <header>
+            <h1>İngilizce Çalışma Planı</h1>
+            
+            <nav class="tabs">
+                <button class="tab active" data-tab="planner">Haftalık Plan</button>
+                <button class="tab" data-tab="progress">İlerleme</button>
+                <button class="tab" data-tab="notes">Notlar</button>
+            </nav>
 
-        <input type="file" id="fileInput" accept=".json" style="display: none">
-
-        <div id="weeklyView" class="view-container active">
-            <div class="days-grid">
-                <!-- Günler JS ile doldurulacak -->
+            <div class="actions">
+                <button class="btn" onclick="saveData()">
+                    <span class="icon">💾</span> Kaydet
+                </button>
+                <button class="btn" onclick="importData()">
+                    <span class="icon">📥</span> İçe Aktar
+                </button>
+                <button class="btn" onclick="exportData()">
+                    <span class="icon">📤</span> Dışa Aktar
+                </button>
+                <button class="btn" onclick="syncWithCalendar()">
+                    <span class="icon">📅</span> Takvime Ekle
+                </button>
             </div>
-        </div>
+        </header>
 
-        <div id="monthlyView" class="view-container">
-            <div class="calendar">
-                <!-- Takvim JS ile doldurulacak -->
-            </div>
-        </div>
+        <main>
+            <!-- Haftalık Plan Sekmesi -->
+            <section id="planner" class="tab-content active">
+                <div class="week-view">
+                    <!-- Her gün için kart -->
+                    <div class="day-card" data-day="pazartesi">
+                        <div class="day-header">
+                            <h2>Pazartesi</h2>
+                            <span class="completion">0/5</span>
+                        </div>
+                        
+                        <!-- Sabah -->
+                        <div class="time-block">
+                            <h3>Sabah</h3>
+                            <div class="task-list">
+                                <label class="task">
+                                    <input type="checkbox" name="task-1">
+                                    <span class="task-content">
+                                        <span class="task-title">English with Lucy: Present Perfect</span>
+                                        <span class="task-duration">15dk</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Öğle -->
+                        <div class="time-block">
+                            <h3>Öğle</h3>
+                            <div class="task-list">
+                                <label class="task">
+                                    <input type="checkbox" name="task-2">
+                                    <span class="task-content">
+                                        <span class="task-title">Modern Family Bölüm 1</span>
+                                        <span class="task-duration">25dk</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Akşam -->
+                        <div class="time-block">
+                            <h3>Akşam</h3>
+                            <div class="task-list">
+                                <label class="task">
+                                    <input type="checkbox" name="task-3">
+                                    <span class="task-content">
+                                        <span class="task-title">Kelime Kartları Hazırlama</span>
+                                        <span class="task-duration">20dk</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Diğer günler benzer şekilde... -->
+                </div>
+            </section>
+
+            <!-- İlerleme Sekmesi -->
+            <section id="progress" class="tab-content">
+                <div class="progress-stats">
+                    <!-- İlerleme grafikleri buraya gelecek -->
+                </div>
+            </section>
+
+            <!-- Notlar Sekmesi -->
+            <section id="notes" class="tab-content">
+                <div class="notes-container">
+                    <!-- Not alma alanı buraya gelecek -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bildirim Modal -->
+    <div id="notification" class="notification">
+        <span class="notification-message"></span>
     </div>
 
     <script src="app.js"></script>
