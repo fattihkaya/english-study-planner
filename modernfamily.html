@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Sonra script dosyaları doğru sırayla -->
     <script src="js/common.js"></script>
+	<script src="js/app.js"></script>
     <script src="js/content.js"></script>
     <script src="js/vocabulary.js"></script>
     <script src="js/progress.js"></script>
@@ -16,13 +17,12 @@
     <div class="container">
         <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
-<!-- Tab butonları -->
-		<button class="tab-btn" data-view="weekly" onclick="switchView('weekly')">Haftalık Plan</button>
-		<button class="tab-btn" data-view="progress" onclick="switchView('progress')">İlerleme</button>
-		<button class="tab-btn" data-view="modernFamily" onclick="switchView('modernFamily')">Modern Family</button>
-		<button class="tab-btn" data-view="vocabulary" onclick="switchView('vocabulary')">Kelimeler</button>
-
-
+        <div class="nav-tabs">
+            <a href="index.html" class="tab-btn">Haftalık Plan</a>
+            <a href="progress.html" class="tab-btn">İlerleme</a>
+            <a href="modernfamily.html" class="tab-btn active">Modern Family</a>
+            <a href="vocabulary.html" class="tab-btn">Kelimeler</a>
+        </div>
 
         <!-- Sezon Seçici -->
         <div class="season-selector">
