@@ -1,18 +1,29 @@
+// common.js
 // Global state yönetimi
 const state = {
     currentView: 'weekly',
     currentDay: 'pazartesi',
-    currentModal: null
+    currentModal: null,
+    tasks: {}
 };
 
 // Sayfa yüklendiğinde çalışacak fonksiyonlar
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     initializeView();
+    renderWeeklyView();
 });
 
 // Event listener'ları kur
 function setupEventListeners() {
+    // Tab değişim olayları
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const view = btn.dataset.view;
+            switchView(view);
+        });
+    });
+
     // Modal dışına tıklama ile kapatma
     window.onclick = (event) => {
         if (event.target.classList.contains('modal')) {
@@ -27,30 +38,24 @@ function setupEventListeners() {
         }
     });
 
-    // Search ve filter işlemleri için
-    const searchInput = document.getElementById('searchWord');
-    if (searchInput) {
-        searchInput.addEventListener('input', handleSearch);
+    // Görev formu submit
+    const taskForm = document.getElementById('taskForm');
+    if (taskForm) {
+        taskForm.addEventListener('submit', handleTaskSubmit);
     }
-
-    const filters = document.querySelectorAll('.filter-select');
-    filters.forEach(filter => {
-        filter.addEventListener('change', handleFilter);
-    });
 }
 
 // Görünüm değiştirme
 function switchView(view) {
-    // Eski view'ı gizle
-    const oldView = document.querySelector('.view-content.active');
-    if (oldView) {
-        oldView.classList.remove('active');
-    }
+    // Tüm view'ları gizle
+    document.querySelectorAll('.view-content').forEach(content => {
+        content.classList.remove('active');
+    });
 
-    // Yeni view'ı göster
-    const newView = document.getElementById(`${view}-view`);
-    if (newView) {
-        newView.classList.add('active');
+    // Seçili view'ı göster
+    const selectedView = document.getElementById(`${view}-view`);
+    if (selectedView) {
+        selectedView.classList.add('active');
         state.currentView = view;
     }
 
@@ -62,28 +67,75 @@ function switchView(view) {
     if (activeBtn) {
         activeBtn.classList.add('active');
     }
-
-    // View'a özel güncellemeler
-    updateViewContent(view);
 }
 
-// View içeriğini güncelle
-function updateViewContent(view) {
-    switch(view) {
-        case 'weekly':
-            renderTasks();
-            break;
-        case 'progress':
-            updateStatistics();
-            renderActivityList();
-            break;
-        case 'vocabulary':
-            renderWordList();
-            break;
-        case 'modernFamily':
-            renderEpisodes();
-            break;
+// Haftalık görünümü oluştur
+function renderWeeklyView() {
+    const weeklyPlan = document.querySelector('.weekly-plan');
+    if (!weeklyPlan) return;
+
+    const days = ['pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma'];
+    const timeBlocks = ['sabah', 'öğle', 'akşam'];
+
+    weeklyPlan.innerHTML = days.map(day => `
+        <div class="day-card">
+            <div class="day-header">
+                <h2>${day.charAt(0).toUpperCase() + day.slice(1)}</h2>
+                <button class="add-btn" onclick="openAddTaskModal('${day}')">+</button>
+            </div>
+            ${timeBlocks.map(time => `
+                <div class="time-block">
+                    <h3>${time.charAt(0).toUpperCase() + time.slice(1)}</h3>
+                    <div id="${day}-${time}-tasks" class="tasks-container">
+                        ${renderTasks(day, time)}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+// Görevleri render et
+function renderTasks(day, time) {
+    const tasks = state.tasks[day]?.[time] || [];
+    return tasks.map(task => `
+        <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+            <div class="task-content">
+                <div class="task-title">${task.title}</div>
+                <div class="task-duration">${task.duration} dk</div>
+            </div>
+            <button class="delete-btn">×</button>
+        </div>
+    `).join('') || 'Görev yok';
+}
+
+// Görev ekleme
+function handleTaskSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const task = {
+        id: Date.now(),
+        title: formData.get('title'),
+        time: formData.get('time'),
+        duration: parseInt(formData.get('duration')),
+        completed: false
+    };
+
+    const day = formData.get('day');
+    
+    if (!state.tasks[day]) {
+        state.tasks[day] = {};
     }
+    if (!state.tasks[day][task.time]) {
+        state.tasks[day][task.time] = [];
+    }
+    
+    state.tasks[day][task.time].push(task);
+    
+    closeModal('taskModal');
+    renderWeeklyView();
+    showNotification('Görev eklendi');
 }
 
 // Modal işlemleri
@@ -100,7 +152,7 @@ function openAddTaskModal(day) {
 function showModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         state.currentModal = modalId;
     }
 }
@@ -123,29 +175,14 @@ function closeAllModals() {
     });
 }
 
-// Arama ve filtreleme
-function handleSearch(event) {
-    const searchTerm = event.target.value.toLowerCase();
-    if (state.currentView === 'vocabulary') {
-        filterWords(searchTerm);
-    }
-}
-
-function handleFilter(event) {
-    const filterType = event.target.dataset.filter;
-    const filterValue = event.target.value;
-    
-    if (state.currentView === 'vocabulary') {
-        filterWords(null, filterType, filterValue);
-    }
-}
-
 // Bildirimler
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
     document.body.appendChild(notification);
+    
+    notification.classList.add('show');
     
     setTimeout(() => {
         notification.remove();
@@ -154,25 +191,7 @@ function showNotification(message, type = 'success') {
 
 // Yardımcı fonksiyonlar
 function initializeView() {
-    // URL'den view parametresini al
     const urlParams = new URLSearchParams(window.location.search);
     const view = urlParams.get('view') || 'weekly';
-    
-    // İlgili view'ı göster
     switchView(view);
-}
-
-function formatDate(date) {
-    return new Date(date).toLocaleDateString('tr-TR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    });
-}
-
-function formatTime(date) {
-    return new Date(date).toLocaleTimeString('tr-TR', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
 }
