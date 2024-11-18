@@ -18,10 +18,13 @@
         <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
         <div class="nav-tabs">
-            <button onclick="switchView('weekly')" class="tab-btn active">Haftalık Plan</button>
-            <button onclick="switchView('progress')" class="tab-btn">İlerleme</button>
-            <button onclick="switchView('modernFamily')" class="tab-btn">Modern Family</button>
-            <button onclick="switchView('kelimeler')" class="tab-btn">Kelimeler</button>
+<!-- Tab butonları -->
+			<button class="tab-btn" data-view="weekly" onclick="switchView('weekly')">Haftalık Plan</button>
+			<button class="tab-btn" data-view="progress" onclick="switchView('progress')">İlerleme</button>
+			<button class="tab-btn" data-view="modernFamily" onclick="switchView('modernFamily')">Modern Family</button>
+			<button class="tab-btn" data-view="vocabulary" onclick="switchView('vocabulary')">Kelimeler</button>
+
+
         </div>
 
         <!-- Haftalık Görünüm -->
