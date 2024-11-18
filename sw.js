@@ -3,7 +3,7 @@ const ASSETS = [
     './',
     './index.html',
     './styles.css',
-    '.js/app.js',
+    './js/app.js',
     './icons/logo.png',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'
 ];
