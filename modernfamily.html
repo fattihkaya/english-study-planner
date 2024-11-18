@@ -16,12 +16,13 @@
     <div class="container">
         <h1 class="main-title">İngilizce Çalışma Planı</h1>
 
-        <div class="nav-tabs">
-            <a href="index.html" class="tab-btn">Haftalık Plan</a>
-            <a href="progress.html" class="tab-btn">İlerleme</a>
-            <a href="modernfamily.html" class="tab-btn active">Modern Family</a>
-            <a href="vocabulary.html" class="tab-btn">Kelimeler</a>
-        </div>
+<!-- Tab butonları -->
+		<button class="tab-btn" data-view="weekly" onclick="switchView('weekly')">Haftalık Plan</button>
+		<button class="tab-btn" data-view="progress" onclick="switchView('progress')">İlerleme</button>
+		<button class="tab-btn" data-view="modernFamily" onclick="switchView('modernFamily')">Modern Family</button>
+		<button class="tab-btn" data-view="vocabulary" onclick="switchView('vocabulary')">Kelimeler</button>
+
+
 
         <!-- Sezon Seçici -->
         <div class="season-selector">
